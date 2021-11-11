@@ -1,0 +1,9 @@
+Thi is a new file that I would like to use to see if I understand how to use git via the command line. this is quite interesting actually. Anyways, here we go.
+
+
+
+-- INSERT --
+ESC
+
+ESC
+
