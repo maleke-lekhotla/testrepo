@@ -7,6 +7,13 @@ const CATEGORY_CLASSES = [
   'Discretionary Spending'
 ]
 
+const CLASS_LABELS = {
+  'Fixed Costs': 'Fixed Costs',
+  'Saving and Investments': 'Savings & Investments',
+  Credit: 'Credit',
+  'Discretionary Spending': 'Discretionary Spending'
+}
+
 function formatCurrency(amount) {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -14,9 +21,13 @@ function formatCurrency(amount) {
   }).format(Number(amount) || 0)
 }
 
-function percent(numerator, denominator) {
-  if (!denominator) return '0.0%'
-  return `${((numerator / denominator) * 100).toFixed(1)}%`
+function percentValue(numerator, denominator) {
+  if (!denominator) return 0
+  return (numerator / denominator) * 100
+}
+
+function percentLabel(value) {
+  return `${value.toFixed(1)}%`
 }
 
 export default function App() {
@@ -40,11 +51,34 @@ export default function App() {
 
   const [receiptImage, setReceiptImage] = useState(null)
 
+  const categoryMap = useMemo(
+    () => Object.fromEntries(categories.map((category) => [category.id, category])),
+    [categories]
+  )
+
   const totals = useMemo(() => {
     const plannedSpending = transactions.reduce((sum, t) => sum + (Number(t.planned) || 0), 0)
     const actualSpending = transactions.reduce((sum, t) => sum + (Number(t.amount) || 0), 0)
-    return { plannedSpending, actualSpending }
-  }, [transactions])
+
+    const perClass = CATEGORY_CLASSES.map((classification) => {
+      const classTransactions = transactions.filter(
+        (transaction) => categoryMap[transaction.categoryId]?.classification === classification
+      )
+
+      const planned = classTransactions.reduce((sum, t) => sum + (Number(t.planned) || 0), 0)
+      const actual = classTransactions.reduce((sum, t) => sum + (Number(t.amount) || 0), 0)
+
+      return {
+        classification,
+        plannedPercent: percentValue(planned, Number(plannedIncome)),
+        actualPercent: percentValue(actual, Number(actualIncome))
+      }
+    })
+
+    const maxPercent = Math.max(60, ...perClass.map((item) => Math.max(item.plannedPercent, item.actualPercent)))
+
+    return { plannedSpending, actualSpending, perClass, maxPercent }
+  }, [transactions, categoryMap, plannedIncome, actualIncome])
 
   const addCategory = (event) => {
     event.preventDefault()
@@ -83,11 +117,6 @@ export default function App() {
     setReceiptImage(URL.createObjectURL(file))
   }
 
-  const categoryMap = useMemo(
-    () => Object.fromEntries(categories.map((category) => [category.id, category])),
-    [categories]
-  )
-
   return (
     <main className="container">
       <h1>Budgeting App</h1>
@@ -95,6 +124,38 @@ export default function App() {
         Plan spending, upload a transaction screenshot, and categorize each transaction into one of the
         four budget classes.
       </p>
+
+      <section className="panel dashboard-panel">
+        <h2 className="chart-title">Spending as A percentage of Income</h2>
+        <div className="chart-legend">
+          <span><i className="dot planned" /> Planned</span>
+          <span><i className="dot actual" /> Actual</span>
+        </div>
+
+        <div className="chart-grid">
+          {totals.perClass.map((item) => (
+            <div key={item.classification} className="chart-group">
+              <div className="bar-pair">
+                <div
+                  className="bar planned"
+                  style={{ height: `${(item.plannedPercent / totals.maxPercent) * 100}%` }}
+                >
+                  <span>{Math.round(item.plannedPercent)}</span>
+                </div>
+                <div
+                  className="bar actual"
+                  style={{ height: `${(item.actualPercent / totals.maxPercent) * 100}%` }}
+                >
+                  <span>{Math.round(item.actualPercent)}</span>
+                </div>
+              </div>
+              <p className="group-label">{CLASS_LABELS[item.classification]}</p>
+            </div>
+          ))}
+        </div>
+        <p className="axis-label">Spending Classes</p>
+        <p className="y-axis-label">Spending rate (% of income)</p>
+      </section>
 
       <section className="panel grid two-col">
         <div>
@@ -122,16 +183,16 @@ export default function App() {
         </div>
 
         <div>
-          <h2>Dashboard</h2>
+          <h2>Totals Overview</h2>
           <div className="kpi-card">
-            <h3>Planned Spending vs Planned Income</h3>
+            <h3>Planned Spending</h3>
             <p>{formatCurrency(totals.plannedSpending)}</p>
-            <small>{percent(totals.plannedSpending, Number(plannedIncome))} of planned income</small>
+            <small>{percentLabel(percentValue(totals.plannedSpending, Number(plannedIncome)))} of planned income</small>
           </div>
           <div className="kpi-card">
-            <h3>Actual Spending vs Actual Income</h3>
+            <h3>Actual Spending</h3>
             <p>{formatCurrency(totals.actualSpending)}</p>
-            <small>{percent(totals.actualSpending, Number(actualIncome))} of actual income</small>
+            <small>{percentLabel(percentValue(totals.actualSpending, Number(actualIncome)))} of actual income</small>
           </div>
         </div>
       </section>
