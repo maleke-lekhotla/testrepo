@@ -95,6 +95,112 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .bars { height: 320px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; align-items: end; }
 .bar {
   border-radius: 18px 18px 0 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #111827;
+  background: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #e5e7eb;
+}
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+.subtitle,
+.hint {
+  color: #4b5563;
+}
+
+.panel {
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.dashboard-panel {
+  position: relative;
+  background: #e5e7eb;
+}
+
+.chart-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.7rem;
+  margin-bottom: 1.2rem;
+  font-size: 1.75rem;
+}
+
+.chart-legend span {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.planned {
+  background: #4b7be0;
+}
+
+.actual {
+  background: #9b80dd;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.8rem;
+  align-items: end;
+  min-height: 420px;
+  border-top: 1px solid #cbd5e1;
+  padding-top: 1rem;
+}
+
+.chart-group {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.bar-pair {
+  height: 360px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem;
+  align-items: end;
+}
+
+.bar {
+  border-radius: 14px 14px 0 0;
   min-height: 6px;
   display: flex;
   align-items: flex-start;
@@ -148,4 +254,148 @@ th, td { padding: 12px; border-top: 1px solid rgba(148, 163, 184, 0.16); text-al
   .review-main, .review-meta, .review-actions { flex-direction: column; }
   .source-card { grid-template-columns: 1fr; }
   .source-card img { width: 100%; height: 220px; }
+  color: #f9fafb;
+  font-size: 1.4rem;
+  font-weight: 500;
+  padding-top: 0.25rem;
+}
+
+.group-label {
+  text-align: center;
+  font-size: 1.65rem;
+}
+
+.axis-label {
+  text-align: center;
+  margin-top: 0.8rem;
+  font-size: 1.85rem;
+}
+
+.y-axis-label {
+  position: absolute;
+  top: 58%;
+  left: 0.2rem;
+  transform: rotate(-90deg);
+  transform-origin: left top;
+  font-size: 1.4rem;
+}
+
+.grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.two-col {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.form-row {
+  grid-template-columns: 2fr 2fr 1fr;
+}
+
+label {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.8rem;
+}
+
+input,
+select,
+button {
+  border-radius: 8px;
+  border: 1px solid #9ca3af;
+  background: #ffffff;
+  color: #111827;
+  padding: 0.55rem 0.7rem;
+}
+
+button {
+  cursor: pointer;
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #f8fafc;
+  font-weight: 600;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.pill {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  border: 1px solid #9ca3af;
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  background: #f9fafb;
+}
+
+.kpi-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0.8rem;
+  margin-bottom: 0.7rem;
+  background: #f9fafb;
+}
+
+.kpi-card p {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0.2rem 0;
+}
+
+.preview {
+  margin-top: 0.8rem;
+  width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  border: 1px solid #9ca3af;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-top: 1px solid #d1d5db;
+  padding: 0.65rem;
+  text-align: left;
+}
+
+@media (max-width: 980px) {
+  .chart-title {
+    font-size: 1.4rem;
+  }
+
+  .chart-grid {
+    gap: 0.8rem;
+    min-height: 320px;
+  }
+
+  .bar-pair {
+    height: 260px;
+  }
+
+  .bar,
+  .group-label,
+  .axis-label,
+  .chart-legend {
+    font-size: 1rem;
+  }
+
+  .y-axis-label {
+    display: none;
+  }
 }
